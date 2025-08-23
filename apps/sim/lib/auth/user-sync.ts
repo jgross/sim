@@ -68,7 +68,6 @@ export async function syncUserFromDigBI(jwtPayload: DigBIJWTPayload) {
         await db.insert(schema.organization).values({
           id: orgId,
           name: `${fullName}'s Organization`,
-          userId: newUserId,
           slug: `${email.split('@')[0]}-${Date.now()}`,
           createdAt: new Date(),
           updatedAt: new Date(),
