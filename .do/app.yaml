@@ -3,15 +3,15 @@ region: nyc
 
 services:
 - name: simstudio-app
-  source_dir: /
+  source_dir: /apps/sim
   github:
     repo: jgross/sim
     branch: main
     deploy_on_push: true
   build_command: |
-    cd apps/sim && bun install && bun run build
+    bun install && bun run build
   run_command: |
-    cd apps/sim && bun start
+    bun start
   environment_slug: node-js
   instance_count: 1
   instance_size_slug: basic-xxs
@@ -58,15 +58,15 @@ services:
     value: https://${APP_DOMAIN}:3002
 
 - name: simstudio-realtime
-  source_dir: /
+  source_dir: /apps/sim
   github:
     repo: jgross/sim
     branch: main
     deploy_on_push: true
   build_command: |
-    cd apps/sim && bun install
+    bun install
   run_command: |
-    cd apps/sim && bun run dev:sockets
+    bun run dev:sockets
   environment_slug: node-js
   instance_count: 1
   instance_size_slug: basic-xxs
@@ -89,14 +89,14 @@ services:
 
 jobs:
 - name: db-migrate
-  source_dir: /
+  source_dir: /apps/sim
   github:
     repo: jgross/sim
     branch: main
   build_command: |
-    cd apps/sim && bun install
+    bun install
   run_command: |
-    cd apps/sim && bunx drizzle-kit migrate
+    bunx drizzle-kit migrate
   environment_slug: node-js
   kind: PRE_DEPLOY
   envs:

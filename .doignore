@@ -1,21 +1,40 @@
-# Ignore CLI and Python SDK directories
+# Ignore SDK directories
 cli/
 python-sdk/
+ts-sdk/
+packages/
 
 # Ignore documentation files
 *.md
 README*
+docs/
 
 # Ignore Docker Compose files (not needed for App Platform)
 docker-compose*.yml
 
-# Ignore Helm charts
+# Ignore Helm charts and deployment configs
 helm/
+.do/
 
 # Ignore development files
 .env*
 .git*
 node_modules/
+.vscode/
+.idea/
+
+# Ignore test files
+**/*.test.*
+**/*.spec.*
+__tests__/
+tests/
+
+# Ignore config files
+*.config.*
+.eslintrc*
+.prettierrc*
+tsconfig.json
+vitest.config.*
 
 # Ignore sensitive files
 *.production
@@ -24,3 +43,7 @@ node_modules/
 dist/
 build/
 .next/
+.turbo/
+
+# Ignore GitHub workflows and templates
+.github/
