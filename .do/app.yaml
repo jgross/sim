@@ -1,0 +1,105 @@
+name: simstudio
+region: nyc
+
+services:
+- name: simstudio-app
+  source_dir: /
+  github:
+    repo: jgross/sim
+    branch: main
+    deploy_on_push: true
+  build_command: |
+    cd apps/sim && bun install && bun run build
+  run_command: |
+    cd apps/sim && bun start
+  environment_slug: node-js
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  routes:
+  - path: /
+  health_check:
+    http_path: /
+  envs:
+  - key: DATABASE_URL
+    scope: RUN_TIME
+    type: SECRET
+  - key: BETTER_AUTH_URL
+    scope: RUN_TIME
+    value: ${APP_URL}
+  - key: NEXT_PUBLIC_APP_URL
+    scope: RUN_TIME
+    value: ${APP_URL}
+  - key: BETTER_AUTH_SECRET
+    scope: RUN_TIME
+    type: SECRET
+  - key: ENCRYPTION_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: RESEND_API_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: GOOGLE_CLIENT_ID
+    scope: RUN_TIME
+    type: SECRET
+  - key: GOOGLE_CLIENT_SECRET
+    scope: RUN_TIME
+    type: SECRET
+  - key: GITHUB_CLIENT_ID
+    scope: RUN_TIME
+    type: SECRET
+  - key: GITHUB_CLIENT_SECRET
+    scope: RUN_TIME
+    type: SECRET
+  - key: SOCKET_SERVER_URL
+    scope: RUN_TIME
+    value: https://${APP_DOMAIN}:3002
+  - key: NEXT_PUBLIC_SOCKET_URL
+    scope: RUN_TIME
+    value: https://${APP_DOMAIN}:3002
+
+- name: simstudio-realtime
+  source_dir: /
+  github:
+    repo: jgross/sim
+    branch: main
+    deploy_on_push: true
+  build_command: |
+    cd apps/sim && bun install
+  run_command: |
+    cd apps/sim && bun run dev:sockets
+  environment_slug: node-js
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  http_port: 3002
+  routes:
+  - path: /socket.io
+  envs:
+  - key: DATABASE_URL
+    scope: RUN_TIME
+    type: SECRET
+  - key: BETTER_AUTH_SECRET
+    scope: RUN_TIME
+    type: SECRET
+  - key: BETTER_AUTH_URL
+    scope: RUN_TIME
+    value: ${APP_URL}
+  - key: NEXT_PUBLIC_APP_URL
+    scope: RUN_TIME
+    value: ${APP_URL}
+
+jobs:
+- name: db-migrate
+  source_dir: /
+  github:
+    repo: jgross/sim
+    branch: main
+  build_command: |
+    cd apps/sim && bun install
+  run_command: |
+    cd apps/sim && bunx drizzle-kit migrate
+  environment_slug: node-js
+  kind: PRE_DEPLOY
+  envs:
+  - key: DATABASE_URL
+    scope: RUN_TIME
+    type: SECRET

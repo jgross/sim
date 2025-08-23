@@ -1,0 +1,26 @@
+# Ignore CLI and Python SDK directories
+cli/
+python-sdk/
+
+# Ignore documentation files
+*.md
+README*
+
+# Ignore Docker Compose files (not needed for App Platform)
+docker-compose*.yml
+
+# Ignore Helm charts
+helm/
+
+# Ignore development files
+.env*
+.git*
+node_modules/
+
+# Ignore sensitive files
+*.production
+
+# Ignore build artifacts
+dist/
+build/
+.next/
