@@ -79,7 +79,6 @@ export async function syncUserFromDigBI(jwtPayload: DigBIJWTPayload) {
           userId: newUserId,
           role: 'admin',
           createdAt: new Date(),
-          updatedAt: new Date(),
         })
       }
 
