@@ -1,1 +1,1 @@
-ALTER TABLE "workflow_blocks" ADD COLUMN "advanced_mode" boolean DEFAULT false NOT NULL;
+ALTER TABLE "sim_workflow_blocks" ADD COLUMN "advanced_mode" boolean DEFAULT false NOT NULL;

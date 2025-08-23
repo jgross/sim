@@ -1,4 +1,4 @@
-CREATE TABLE "user_rate_limits" (
+CREATE TABLE "sim_user_rate_limits" (
 	"user_id" text PRIMARY KEY NOT NULL,
 	"sync_api_requests" integer DEFAULT 0 NOT NULL,
 	"async_api_requests" integer DEFAULT 0 NOT NULL,
@@ -8,4 +8,4 @@ CREATE TABLE "user_rate_limits" (
 	"rate_limit_reset_at" timestamp
 );
 --> statement-breakpoint
-ALTER TABLE "user_rate_limits" ADD CONSTRAINT "user_rate_limits_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "sim_user_rate_limits" ADD CONSTRAINT "sim_user_rate_limits_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."sim_user"("id") ON DELETE cascade ON UPDATE no action;

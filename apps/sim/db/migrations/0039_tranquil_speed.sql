@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS vector;
 
 -- Create knowledge_base table
-CREATE TABLE IF NOT EXISTS "knowledge_base" (
+CREATE TABLE IF NOT EXISTS "sim_knowledge_base" (
 	"id" text PRIMARY KEY NOT NULL,
 	"user_id" text NOT NULL,
 	"workspace_id" text,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "knowledge_base" (
 );
 
 -- Create document table
-CREATE TABLE IF NOT EXISTS "document" (
+CREATE TABLE IF NOT EXISTS "sim_document" (
 	"id" text PRIMARY KEY NOT NULL,
 	"knowledge_base_id" text NOT NULL,
 	"filename" text NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS "document" (
 );
 
 -- Create embedding table with optimized vector type
-CREATE TABLE IF NOT EXISTS "embedding" (
+CREATE TABLE IF NOT EXISTS "sim_embedding" (
 	"id" text PRIMARY KEY NOT NULL,
 	"knowledge_base_id" text NOT NULL,
 	"document_id" text NOT NULL,
@@ -58,57 +58,57 @@ CREATE TABLE IF NOT EXISTS "embedding" (
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	
 	-- Ensure embedding exists (simplified constraint)
-	CONSTRAINT "embedding_not_null_check" CHECK ("embedding" IS NOT NULL)
+	CONSTRAINT "sim_embedding_not_null_check" CHECK ("embedding" IS NOT NULL)
 );
 
 -- Add foreign key constraints
-ALTER TABLE "knowledge_base" ADD CONSTRAINT "knowledge_base_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "knowledge_base" ADD CONSTRAINT "knowledge_base_workspace_id_workspace_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "workspace"("id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "document" ADD CONSTRAINT "document_knowledge_base_id_knowledge_base_id_fk" FOREIGN KEY ("knowledge_base_id") REFERENCES "knowledge_base"("id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "embedding" ADD CONSTRAINT "embedding_knowledge_base_id_knowledge_base_id_fk" FOREIGN KEY ("knowledge_base_id") REFERENCES "knowledge_base"("id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "embedding" ADD CONSTRAINT "embedding_document_id_document_id_fk" FOREIGN KEY ("document_id") REFERENCES "document"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "sim_knowledge_base" ADD CONSTRAINT "sim_knowledge_base_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "sim_user"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "sim_knowledge_base" ADD CONSTRAINT "sim_knowledge_base_workspace_id_workspace_id_fk" FOREIGN KEY ("workspace_id") REFERENCES "sim_workspace"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "sim_document" ADD CONSTRAINT "sim_document_knowledge_base_id_knowledge_base_id_fk" FOREIGN KEY ("knowledge_base_id") REFERENCES "sim_knowledge_base"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "sim_embedding" ADD CONSTRAINT "sim_embedding_knowledge_base_id_knowledge_base_id_fk" FOREIGN KEY ("knowledge_base_id") REFERENCES "sim_knowledge_base"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "sim_embedding" ADD CONSTRAINT "sim_embedding_document_id_document_id_fk" FOREIGN KEY ("document_id") REFERENCES "sim_document"("id") ON DELETE cascade ON UPDATE no action;
 
 -- Create indexes for knowledge_base table
-CREATE INDEX IF NOT EXISTS "kb_user_id_idx" ON "knowledge_base" USING btree ("user_id");
-CREATE INDEX IF NOT EXISTS "kb_workspace_id_idx" ON "knowledge_base" USING btree ("workspace_id");
-CREATE INDEX IF NOT EXISTS "kb_user_workspace_idx" ON "knowledge_base" USING btree ("user_id","workspace_id");
-CREATE INDEX IF NOT EXISTS "kb_deleted_at_idx" ON "knowledge_base" USING btree ("deleted_at");
+CREATE INDEX IF NOT EXISTS "kb_user_id_idx" ON "sim_knowledge_base" USING btree ("user_id");
+CREATE INDEX IF NOT EXISTS "kb_workspace_id_idx" ON "sim_knowledge_base" USING btree ("workspace_id");
+CREATE INDEX IF NOT EXISTS "kb_user_workspace_idx" ON "sim_knowledge_base" USING btree ("user_id","workspace_id");
+CREATE INDEX IF NOT EXISTS "kb_deleted_at_idx" ON "sim_knowledge_base" USING btree ("deleted_at");
 
 -- Create indexes for document table
-CREATE INDEX IF NOT EXISTS "doc_kb_id_idx" ON "document" USING btree ("knowledge_base_id");
-CREATE INDEX IF NOT EXISTS "doc_file_hash_idx" ON "document" USING btree ("file_hash");
-CREATE INDEX IF NOT EXISTS "doc_filename_idx" ON "document" USING btree ("filename");
-CREATE INDEX IF NOT EXISTS "doc_kb_uploaded_at_idx" ON "document" USING btree ("knowledge_base_id","uploaded_at");
+CREATE INDEX IF NOT EXISTS "doc_kb_id_idx" ON "sim_document" USING btree ("knowledge_base_id");
+CREATE INDEX IF NOT EXISTS "doc_file_hash_idx" ON "sim_document" USING btree ("file_hash");
+CREATE INDEX IF NOT EXISTS "doc_filename_idx" ON "sim_document" USING btree ("filename");
+CREATE INDEX IF NOT EXISTS "doc_kb_uploaded_at_idx" ON "sim_document" USING btree ("knowledge_base_id","uploaded_at");
 
 -- Create embedding table indexes
-CREATE INDEX IF NOT EXISTS "emb_kb_id_idx" ON "embedding" USING btree ("knowledge_base_id");
-CREATE INDEX IF NOT EXISTS "emb_doc_id_idx" ON "embedding" USING btree ("document_id");
-CREATE UNIQUE INDEX IF NOT EXISTS "emb_doc_chunk_idx" ON "embedding" USING btree ("document_id","chunk_index");
-CREATE INDEX IF NOT EXISTS "emb_kb_model_idx" ON "embedding" USING btree ("knowledge_base_id","embedding_model");
-CREATE INDEX IF NOT EXISTS "emb_chunk_hash_idx" ON "embedding" USING btree ("chunk_hash");
-CREATE INDEX IF NOT EXISTS "emb_kb_access_idx" ON "embedding" USING btree ("knowledge_base_id","last_accessed_at");
-CREATE INDEX IF NOT EXISTS "emb_kb_rank_idx" ON "embedding" USING btree ("knowledge_base_id","search_rank");
+CREATE INDEX IF NOT EXISTS "emb_kb_id_idx" ON "sim_embedding" USING btree ("knowledge_base_id");
+CREATE INDEX IF NOT EXISTS "emb_doc_id_idx" ON "sim_embedding" USING btree ("document_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "emb_doc_chunk_idx" ON "sim_embedding" USING btree ("document_id","chunk_index");
+CREATE INDEX IF NOT EXISTS "emb_kb_model_idx" ON "sim_embedding" USING btree ("knowledge_base_id","embedding_model");
+CREATE INDEX IF NOT EXISTS "emb_chunk_hash_idx" ON "sim_embedding" USING btree ("chunk_hash");
+CREATE INDEX IF NOT EXISTS "emb_kb_access_idx" ON "sim_embedding" USING btree ("knowledge_base_id","last_accessed_at");
+CREATE INDEX IF NOT EXISTS "emb_kb_rank_idx" ON "sim_embedding" USING btree ("knowledge_base_id","search_rank");
 
 -- Create optimized HNSW index for vector similarity search
-CREATE INDEX IF NOT EXISTS "embedding_vector_hnsw_idx" ON "embedding" 
+CREATE INDEX IF NOT EXISTS "sim_embedding_vector_hnsw_idx" ON "sim_embedding" 
   USING hnsw ("embedding" vector_cosine_ops) 
   WITH (m = 16, ef_construction = 64);
 
 -- GIN index for JSONB metadata queries
-CREATE INDEX IF NOT EXISTS "emb_metadata_gin_idx" ON "embedding" USING gin ("metadata");
+CREATE INDEX IF NOT EXISTS "emb_metadata_gin_idx" ON "sim_embedding" USING gin ("metadata");
 
 -- Full-text search support with generated tsvector column
-ALTER TABLE "embedding" ADD COLUMN IF NOT EXISTS "content_tsv" tsvector GENERATED ALWAYS AS (to_tsvector('english', "content")) STORED;
-CREATE INDEX IF NOT EXISTS "emb_content_fts_idx" ON "embedding" USING gin ("content_tsv");
+ALTER TABLE "sim_embedding" ADD COLUMN IF NOT EXISTS "content_tsv" tsvector GENERATED ALWAYS AS (to_tsvector('english', "content")) STORED;
+CREATE INDEX IF NOT EXISTS "emb_content_fts_idx" ON "sim_embedding" USING gin ("content_tsv");
 
 -- Performance optimization: Set fillfactor for high-update tables
-ALTER TABLE "embedding" SET (fillfactor = 85);
-ALTER TABLE "document" SET (fillfactor = 90);
+ALTER TABLE "sim_embedding" SET (fillfactor = 85);
+ALTER TABLE "sim_document" SET (fillfactor = 90);
 
 -- Add table comments for documentation
-COMMENT ON TABLE "knowledge_base" IS 'Stores knowledge base configurations and settings';
-COMMENT ON TABLE "document" IS 'Stores document metadata and processing status';
-COMMENT ON TABLE "embedding" IS 'Stores vector embeddings optimized for text-embedding-3-small with HNSW similarity search';
-COMMENT ON COLUMN "embedding"."embedding" IS 'Vector embedding using pgvector type optimized for HNSW similarity search';
-COMMENT ON COLUMN "embedding"."metadata" IS 'JSONB metadata for flexible filtering (e.g., page numbers, sections, tags)';
-COMMENT ON COLUMN "embedding"."search_rank" IS 'Boost factor for search results, higher values appear first'; 
+COMMENT ON TABLE "sim_knowledge_base" IS 'Stores knowledge base configurations and settings';
+COMMENT ON TABLE "sim_document" IS 'Stores document metadata and processing status';
+COMMENT ON TABLE "sim_embedding" IS 'Stores vector embeddings optimized for text-embedding-3-small with HNSW similarity search';
+COMMENT ON COLUMN "sim_embedding"."embedding" IS 'Vector embedding using pgvector type optimized for HNSW similarity search';
+COMMENT ON COLUMN "sim_embedding"."metadata" IS 'JSONB metadata for flexible filtering (e.g., page numbers, sections, tags)';
+COMMENT ON COLUMN "sim_embedding"."search_rank" IS 'Boost factor for search results, higher values appear first'; 

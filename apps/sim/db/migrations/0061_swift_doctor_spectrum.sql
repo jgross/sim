@@ -1,1 +1,1 @@
-DROP TABLE "workflow_execution_blocks" CASCADE;
+DROP TABLE "sim_workflow_execution_blocks" CASCADE;

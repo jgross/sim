@@ -1,1 +1,1 @@
-ALTER TABLE "workflow" DROP COLUMN "api_key";
+ALTER TABLE "sim_workflow" DROP COLUMN "api_key";

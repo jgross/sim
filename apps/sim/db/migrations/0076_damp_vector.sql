@@ -6,16 +6,16 @@ DO $$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_schema = 'public' AND table_name = 'workflow_execution_logs' AND column_name = 'metadata'
+    WHERE table_schema = 'public' AND table_name = 'sim_workflow_execution_logs' AND column_name = 'metadata'
   ) AND NOT EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_schema = 'public' AND table_name = 'workflow_execution_logs' AND column_name = 'execution_data'
+    WHERE table_schema = 'public' AND table_name = 'sim_workflow_execution_logs' AND column_name = 'execution_data'
   ) THEN
-    EXECUTE 'ALTER TABLE workflow_execution_logs RENAME COLUMN metadata TO execution_data';
+    EXECUTE 'ALTER TABLE sim_workflow_execution_logs RENAME COLUMN metadata TO execution_data';
   END IF;
 END $$;--> statement-breakpoint
 
-ALTER TABLE "workflow_execution_logs"
+ALTER TABLE "sim_workflow_execution_logs"
   ADD COLUMN IF NOT EXISTS "execution_data" jsonb NOT NULL DEFAULT '{}'::jsonb,
   ADD COLUMN IF NOT EXISTS "cost" jsonb;--> statement-breakpoint
 
@@ -35,7 +35,7 @@ BEGIN
     TRUNCATE _tmp_candidate_ids;
     INSERT INTO _tmp_candidate_ids(id, created_at)
     SELECT id, created_at
-    FROM workflow_execution_logs
+    FROM sim_workflow_execution_logs
     WHERE (created_at, id) > (v_last_created_at, v_last_id) AND cost IS NULL
     ORDER BY created_at, id
     LIMIT v_batch_size;
@@ -51,7 +51,7 @@ BEGIN
     WITH RECURSIVE
     spans AS (
       SELECT l.id, s.span
-      FROM workflow_execution_logs l
+      FROM sim_workflow_execution_logs l
       JOIN _tmp_candidate_ids c ON c.id = l.id
       LEFT JOIN LATERAL jsonb_array_elements(
         COALESCE(
@@ -120,10 +120,10 @@ BEGIN
       SELECT l.id,
              NULLIF((l.execution_data->'tokenBreakdown'->>'prompt')::numeric, 0) AS prompt,
              NULLIF((l.execution_data->'tokenBreakdown'->>'completion')::numeric, 0) AS completion
-      FROM workflow_execution_logs l
+      FROM sim_workflow_execution_logs l
       JOIN _tmp_candidate_ids c ON c.id = l.id
     )
-    UPDATE workflow_execution_logs AS l
+    UPDATE sim_workflow_execution_logs AS l
     SET cost = jsonb_strip_nulls(
       jsonb_build_object(
         'total', COALESCE((to_jsonb(l)->>'total_cost')::numeric, NULLIF(agg.agg_total,0)),
@@ -154,7 +154,7 @@ BEGIN
 END $$;--> statement-breakpoint
 
 -- 3) Drop legacy columns now that backfill is complete
-ALTER TABLE "workflow_execution_logs"
+ALTER TABLE "sim_workflow_execution_logs"
   DROP COLUMN IF EXISTS "message",
   DROP COLUMN IF EXISTS "block_count",
   DROP COLUMN IF EXISTS "success_count",

@@ -1,4 +1,4 @@
-CREATE TABLE "chat" (
+CREATE TABLE "sim_chat" (
 	"id" text PRIMARY KEY NOT NULL,
 	"workflow_id" text NOT NULL,
 	"user_id" text NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE "chat" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "subscription" (
+CREATE TABLE "sim_subscription" (
 	"id" text PRIMARY KEY NOT NULL,
 	"plan" text NOT NULL,
 	"reference_id" text NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE "subscription" (
 	"seats" integer
 );
 --> statement-breakpoint
-ALTER TABLE "user" ADD COLUMN "stripe_customer_id" text;--> statement-breakpoint
-ALTER TABLE "chat" ADD CONSTRAINT "chat_workflow_id_workflow_id_fk" FOREIGN KEY ("workflow_id") REFERENCES "public"."workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "chat" ADD CONSTRAINT "chat_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE UNIQUE INDEX "subdomain_idx" ON "chat" USING btree ("subdomain");
+ALTER TABLE "sim_user" ADD COLUMN "stripe_customer_id" text;--> statement-breakpoint
+ALTER TABLE "sim_chat" ADD CONSTRAINT "sim_chat_workflow_id_workflow_id_fk" FOREIGN KEY ("workflow_id") REFERENCES "public"."sim_workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sim_chat" ADD CONSTRAINT "sim_chat_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."sim_user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE UNIQUE INDEX "subdomain_idx" ON "sim_chat" USING btree ("subdomain");

@@ -1,1 +1,1 @@
-ALTER TABLE "workflow" ADD COLUMN "pinned_api_key" text;
+ALTER TABLE "sim_workflow" ADD COLUMN "pinned_api_key" text;

@@ -4,6 +4,7 @@ import { isDev, isHosted } from './lib/environment'
 import { createLogger } from './lib/logs/console/logger'
 import { generateRuntimeCSP } from './lib/security/csp'
 import { getBaseDomain } from './lib/urls/utils'
+import { handleDigBIAuthentication, shouldHandleDigBIAuth } from './lib/auth/digbi-middleware'
 
 const logger = createLogger('Middleware')
 
@@ -18,7 +19,15 @@ const SUSPICIOUS_UA_PATTERNS = [
 const BASE_DOMAIN = getBaseDomain()
 
 export async function middleware(request: NextRequest) {
-  // Check for active session
+  // Handle DigBI JWT authentication first (if present)
+  if (shouldHandleDigBIAuth(request)) {
+    const digbiResponse = await handleDigBIAuthentication(request)
+    if (digbiResponse !== NextResponse.next()) {
+      return digbiResponse
+    }
+  }
+
+  // Check for active session (including newly created sessions from DigBI)
   const sessionCookie = getSessionCookie(request)
   const hasActiveSession = !!sessionCookie
 

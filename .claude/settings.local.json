@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(find:*)",
+      "Bash(bun test:*)",
+      "Bash(bun run:*)",
+      "Bash(bunx vitest:*)",
+      "Bash(bunx tsc:*)",
+      "Bash(openssl rand:*)",
+      "Bash(docker-compose:*)",
+      "Bash(docker compose:*)",
+      "Bash(bunx drizzle-kit migrate:*)",
+      "Bash(PGPASSWORD=postgres psql -h localhost -p 5432 -U postgres -d simstudio -c \"SELECT 1;\")",
+      "Bash(docker exec:*)",
+      "Bash(timeout:*)",
+      "Bash(bun add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

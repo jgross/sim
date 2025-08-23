@@ -1,1 +1,1 @@
-ALTER TABLE "templates" ALTER COLUMN "workflow_id" DROP NOT NULL;
+ALTER TABLE "sim_templates" ALTER COLUMN "workflow_id" DROP NOT NULL;

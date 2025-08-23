@@ -1,1 +1,1 @@
-ALTER TABLE "workflow" ALTER COLUMN "marketplace_data" DROP DEFAULT;
+ALTER TABLE "sim_workflow" ALTER COLUMN "sim_marketplace_data" DROP DEFAULT;

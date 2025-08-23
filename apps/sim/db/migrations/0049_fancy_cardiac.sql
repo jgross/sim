@@ -1,4 +1,4 @@
-CREATE TABLE "workflow_execution_blocks" (
+CREATE TABLE "sim_workflow_execution_blocks" (
 	"id" text PRIMARY KEY NOT NULL,
 	"execution_id" text NOT NULL,
 	"workflow_id" text NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE "workflow_execution_blocks" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "workflow_execution_logs" (
+CREATE TABLE "sim_workflow_execution_logs" (
 	"id" text PRIMARY KEY NOT NULL,
 	"workflow_id" text NOT NULL,
 	"execution_id" text NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE "workflow_execution_logs" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "workflow_execution_snapshots" (
+CREATE TABLE "sim_workflow_execution_snapshots" (
 	"id" text PRIMARY KEY NOT NULL,
 	"workflow_id" text NOT NULL,
 	"state_hash" text NOT NULL,
@@ -55,28 +55,28 @@ CREATE TABLE "workflow_execution_snapshots" (
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-ALTER TABLE "workflow_execution_blocks" ADD CONSTRAINT "workflow_execution_blocks_workflow_id_workflow_id_fk" FOREIGN KEY ("workflow_id") REFERENCES "public"."workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "workflow_execution_logs" ADD CONSTRAINT "workflow_execution_logs_workflow_id_workflow_id_fk" FOREIGN KEY ("workflow_id") REFERENCES "public"."workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "workflow_execution_logs" ADD CONSTRAINT "workflow_execution_logs_state_snapshot_id_workflow_execution_snapshots_id_fk" FOREIGN KEY ("state_snapshot_id") REFERENCES "public"."workflow_execution_snapshots"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "workflow_execution_snapshots" ADD CONSTRAINT "workflow_execution_snapshots_workflow_id_workflow_id_fk" FOREIGN KEY ("workflow_id") REFERENCES "public"."workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "execution_blocks_execution_id_idx" ON "workflow_execution_blocks" USING btree ("execution_id");--> statement-breakpoint
-CREATE INDEX "execution_blocks_workflow_id_idx" ON "workflow_execution_blocks" USING btree ("workflow_id");--> statement-breakpoint
-CREATE INDEX "execution_blocks_block_id_idx" ON "workflow_execution_blocks" USING btree ("block_id");--> statement-breakpoint
-CREATE INDEX "execution_blocks_status_idx" ON "workflow_execution_blocks" USING btree ("status");--> statement-breakpoint
-CREATE INDEX "execution_blocks_duration_idx" ON "workflow_execution_blocks" USING btree ("duration_ms");--> statement-breakpoint
-CREATE INDEX "execution_blocks_cost_idx" ON "workflow_execution_blocks" USING btree ("cost_total");--> statement-breakpoint
-CREATE INDEX "execution_blocks_workflow_execution_idx" ON "workflow_execution_blocks" USING btree ("workflow_id","execution_id");--> statement-breakpoint
-CREATE INDEX "execution_blocks_execution_status_idx" ON "workflow_execution_blocks" USING btree ("execution_id","status");--> statement-breakpoint
-CREATE INDEX "execution_blocks_started_at_idx" ON "workflow_execution_blocks" USING btree ("started_at");--> statement-breakpoint
-CREATE INDEX "workflow_execution_logs_workflow_id_idx" ON "workflow_execution_logs" USING btree ("workflow_id");--> statement-breakpoint
-CREATE INDEX "workflow_execution_logs_execution_id_idx" ON "workflow_execution_logs" USING btree ("execution_id");--> statement-breakpoint
-CREATE INDEX "workflow_execution_logs_trigger_idx" ON "workflow_execution_logs" USING btree ("trigger");--> statement-breakpoint
-CREATE INDEX "workflow_execution_logs_level_idx" ON "workflow_execution_logs" USING btree ("level");--> statement-breakpoint
-CREATE INDEX "workflow_execution_logs_started_at_idx" ON "workflow_execution_logs" USING btree ("started_at");--> statement-breakpoint
-CREATE INDEX "workflow_execution_logs_cost_idx" ON "workflow_execution_logs" USING btree ("total_cost");--> statement-breakpoint
-CREATE INDEX "workflow_execution_logs_duration_idx" ON "workflow_execution_logs" USING btree ("total_duration_ms");--> statement-breakpoint
-CREATE UNIQUE INDEX "workflow_execution_logs_execution_id_unique" ON "workflow_execution_logs" USING btree ("execution_id");--> statement-breakpoint
-CREATE INDEX "workflow_snapshots_workflow_id_idx" ON "workflow_execution_snapshots" USING btree ("workflow_id");--> statement-breakpoint
-CREATE INDEX "workflow_snapshots_hash_idx" ON "workflow_execution_snapshots" USING btree ("state_hash");--> statement-breakpoint
-CREATE UNIQUE INDEX "workflow_snapshots_workflow_hash_idx" ON "workflow_execution_snapshots" USING btree ("workflow_id","state_hash");--> statement-breakpoint
-CREATE INDEX "workflow_snapshots_created_at_idx" ON "workflow_execution_snapshots" USING btree ("created_at");
+ALTER TABLE "sim_workflow_execution_blocks" ADD CONSTRAINT "sim_workflow_execution_blocks_workflow_id_workflow_id_fk" FOREIGN KEY ("workflow_id") REFERENCES "public"."sim_workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sim_workflow_execution_logs" ADD CONSTRAINT "sim_workflow_execution_logs_workflow_id_workflow_id_fk" FOREIGN KEY ("workflow_id") REFERENCES "public"."sim_workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sim_workflow_execution_logs" ADD CONSTRAINT "sim_workflow_execution_logs_state_snapshot_id_workflow_execution_snapshots_id_fk" FOREIGN KEY ("state_snapshot_id") REFERENCES "public"."sim_workflow_execution_snapshots"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "sim_workflow_execution_snapshots" ADD CONSTRAINT "sim_workflow_execution_snapshots_workflow_id_workflow_id_fk" FOREIGN KEY ("workflow_id") REFERENCES "public"."sim_workflow"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "execution_blocks_execution_id_idx" ON "sim_workflow_execution_blocks" USING btree ("execution_id");--> statement-breakpoint
+CREATE INDEX "execution_blocks_workflow_id_idx" ON "sim_workflow_execution_blocks" USING btree ("workflow_id");--> statement-breakpoint
+CREATE INDEX "execution_blocks_block_id_idx" ON "sim_workflow_execution_blocks" USING btree ("block_id");--> statement-breakpoint
+CREATE INDEX "execution_blocks_status_idx" ON "sim_workflow_execution_blocks" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "execution_blocks_duration_idx" ON "sim_workflow_execution_blocks" USING btree ("duration_ms");--> statement-breakpoint
+CREATE INDEX "execution_blocks_cost_idx" ON "sim_workflow_execution_blocks" USING btree ("cost_total");--> statement-breakpoint
+CREATE INDEX "execution_blocks_workflow_execution_idx" ON "sim_workflow_execution_blocks" USING btree ("workflow_id","execution_id");--> statement-breakpoint
+CREATE INDEX "execution_blocks_execution_status_idx" ON "sim_workflow_execution_blocks" USING btree ("execution_id","status");--> statement-breakpoint
+CREATE INDEX "execution_blocks_started_at_idx" ON "sim_workflow_execution_blocks" USING btree ("started_at");--> statement-breakpoint
+CREATE INDEX "sim_workflow_execution_logs_workflow_id_idx" ON "sim_workflow_execution_logs" USING btree ("workflow_id");--> statement-breakpoint
+CREATE INDEX "sim_workflow_execution_logs_execution_id_idx" ON "sim_workflow_execution_logs" USING btree ("execution_id");--> statement-breakpoint
+CREATE INDEX "sim_workflow_execution_logs_trigger_idx" ON "sim_workflow_execution_logs" USING btree ("trigger");--> statement-breakpoint
+CREATE INDEX "sim_workflow_execution_logs_level_idx" ON "sim_workflow_execution_logs" USING btree ("level");--> statement-breakpoint
+CREATE INDEX "sim_workflow_execution_logs_started_at_idx" ON "sim_workflow_execution_logs" USING btree ("started_at");--> statement-breakpoint
+CREATE INDEX "sim_workflow_execution_logs_cost_idx" ON "sim_workflow_execution_logs" USING btree ("total_cost");--> statement-breakpoint
+CREATE INDEX "sim_workflow_execution_logs_duration_idx" ON "sim_workflow_execution_logs" USING btree ("total_duration_ms");--> statement-breakpoint
+CREATE UNIQUE INDEX "sim_workflow_execution_logs_execution_id_unique" ON "sim_workflow_execution_logs" USING btree ("execution_id");--> statement-breakpoint
+CREATE INDEX "sim_workflow_snapshots_workflow_id_idx" ON "sim_workflow_execution_snapshots" USING btree ("workflow_id");--> statement-breakpoint
+CREATE INDEX "sim_workflow_snapshots_hash_idx" ON "sim_workflow_execution_snapshots" USING btree ("state_hash");--> statement-breakpoint
+CREATE UNIQUE INDEX "sim_workflow_snapshots_workflow_hash_idx" ON "sim_workflow_execution_snapshots" USING btree ("workflow_id","state_hash");--> statement-breakpoint
+CREATE INDEX "sim_workflow_snapshots_created_at_idx" ON "sim_workflow_execution_snapshots" USING btree ("created_at");

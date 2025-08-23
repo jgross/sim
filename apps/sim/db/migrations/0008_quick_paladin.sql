@@ -1,1 +1,1 @@
-ALTER TABLE "workflow_logs" ADD COLUMN "duration" text;
+ALTER TABLE "sim_workflow_logs" ADD COLUMN "duration" text;

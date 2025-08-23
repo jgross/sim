@@ -1,1 +1,1 @@
-ALTER TABLE "workflow_logs" ALTER COLUMN "trigger" DROP NOT NULL;
+ALTER TABLE "sim_workflow_logs" ALTER COLUMN "trigger" DROP NOT NULL;

@@ -1,1 +1,1 @@
-ALTER TABLE "workflow_schedule" DROP COLUMN "timezone";
+ALTER TABLE "sim_workflow_schedule" DROP COLUMN "timezone";

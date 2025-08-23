@@ -1,0 +1,73 @@
+name: sim-app
+services:
+  - name: app
+    source_dir: /apps/sim
+    github:
+      repo: your-username/sim  # Replace with your GitHub repo
+      branch: main
+    build_command: bun install && bun run build
+    run_command: bun start
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: professional-xs  # $12/month
+    http_port: 3000
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}
+      - key: BETTER_AUTH_SECRET
+        value: ${BETTER_AUTH_SECRET}  # Set via DO dashboard
+      - key: ENCRYPTION_KEY
+        value: ${ENCRYPTION_KEY}      # Set via DO dashboard
+      - key: DIGBI_JWT_SECRET
+        value: ${DIGBI_JWT_SECRET}    # Set via DO dashboard
+      - key: NEXT_PUBLIC_APP_URL
+        value: ${_self.URL}
+      - key: BETTER_AUTH_URL
+        value: ${_self.URL}
+      - key: SOCKET_SERVER_URL
+        value: ${realtime.URL}
+      - key: NEXT_PUBLIC_SOCKET_URL
+        value: ${realtime.URL}
+
+  - name: realtime
+    source_dir: /apps/sim/socket-server
+    github:
+      repo: your-username/sim  # Replace with your GitHub repo
+      branch: main
+    build_command: bun install
+    run_command: bun run index.ts
+    environment_slug: node-js
+    instance_count: 1
+    instance_size_slug: basic  # $5/month
+    http_port: 3002
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}
+      - key: BETTER_AUTH_SECRET
+        value: ${BETTER_AUTH_SECRET}
+
+databases:
+  - name: db
+    engine: PG
+    version: "15"
+    size: db-s-1vcpu-1gb  # $15/month
+    num_nodes: 1
+
+jobs:
+  - name: migrations
+    kind: PRE_DEPLOY
+    source_dir: /apps/sim
+    github:
+      repo: your-username/sim
+      branch: main
+    build_command: bun install
+    run_command: bun run db:migrate
+    environment_slug: node-js
+    instance_size_slug: basic
+    envs:
+      - key: DATABASE_URL
+        value: ${db.DATABASE_URL}

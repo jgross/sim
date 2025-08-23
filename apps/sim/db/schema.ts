@@ -27,7 +27,7 @@ export const tsvector = customType<{
   },
 })
 
-export const user = pgTable('user', {
+export const user = pgTable('sim_user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
@@ -38,7 +38,7 @@ export const user = pgTable('user', {
   stripeCustomerId: text('stripe_customer_id'),
 })
 
-export const session = pgTable('session', {
+export const session = pgTable('sim_session', {
   id: text('id').primaryKey(),
   expiresAt: timestamp('expires_at').notNull(),
   token: text('token').notNull().unique(),
@@ -54,7 +54,7 @@ export const session = pgTable('session', {
   }),
 })
 
-export const account = pgTable('account', {
+export const account = pgTable('sim_account', {
   id: text('id').primaryKey(),
   accountId: text('account_id').notNull(),
   providerId: text('provider_id').notNull(),
@@ -72,7 +72,7 @@ export const account = pgTable('account', {
   updatedAt: timestamp('updated_at').notNull(),
 })
 
-export const verification = pgTable('verification', {
+export const verification = pgTable('sim_verification', {
   id: text('id').primaryKey(),
   identifier: text('identifier').notNull(),
   value: text('value').notNull(),
@@ -82,7 +82,7 @@ export const verification = pgTable('verification', {
 })
 
 export const workflowFolder = pgTable(
-  'workflow_folder',
+  'sim_workflow_folder',
   {
     id: text('id').primaryKey(),
     name: text('name').notNull(),
@@ -110,7 +110,7 @@ export const workflowFolder = pgTable(
 )
 
 export const workflow = pgTable(
-  'workflow',
+  'sim_workflow',
   {
     id: text('id').primaryKey(),
     userId: text('user_id')
@@ -143,7 +143,7 @@ export const workflow = pgTable(
 )
 
 export const workflowBlocks = pgTable(
-  'workflow_blocks',
+  'sim_workflow_blocks',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id')
@@ -185,7 +185,7 @@ export const workflowBlocks = pgTable(
 )
 
 export const workflowEdges = pgTable(
-  'workflow_edges',
+  'sim_workflow_edges',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id')
@@ -219,7 +219,7 @@ export const workflowEdges = pgTable(
 )
 
 export const workflowSubflows = pgTable(
-  'workflow_subflows',
+  'sim_workflow_subflows',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id')
@@ -238,7 +238,7 @@ export const workflowSubflows = pgTable(
   })
 )
 
-export const waitlist = pgTable('waitlist', {
+export const waitlist = pgTable('sim_waitlist', {
   id: text('id').primaryKey(),
   email: text('email').notNull().unique(),
   status: text('status').notNull().default('pending'), // pending, approved, rejected
@@ -247,7 +247,7 @@ export const waitlist = pgTable('waitlist', {
 })
 
 export const workflowExecutionSnapshots = pgTable(
-  'workflow_execution_snapshots',
+  'sim_workflow_execution_snapshots',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id')
@@ -269,7 +269,7 @@ export const workflowExecutionSnapshots = pgTable(
 )
 
 export const workflowExecutionLogs = pgTable(
-  'workflow_execution_logs',
+  'sim_workflow_execution_logs',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id')
@@ -309,7 +309,7 @@ export const workflowExecutionLogs = pgTable(
   })
 )
 
-export const environment = pgTable('environment', {
+export const environment = pgTable('sim_environment', {
   id: text('id').primaryKey(), // Use the user id as the key
   userId: text('user_id')
     .notNull()
@@ -319,7 +319,7 @@ export const environment = pgTable('environment', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 })
 
-export const settings = pgTable('settings', {
+export const settings = pgTable('sim_settings', {
   id: text('id').primaryKey(), // Use the user id as the key
   userId: text('user_id')
     .notNull()
@@ -346,7 +346,7 @@ export const settings = pgTable('settings', {
 })
 
 export const workflowSchedule = pgTable(
-  'workflow_schedule',
+  'sim_workflow_schedule',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id')
@@ -375,7 +375,7 @@ export const workflowSchedule = pgTable(
 )
 
 export const webhook = pgTable(
-  'webhook',
+  'sim_webhook',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id')
@@ -397,7 +397,7 @@ export const webhook = pgTable(
   }
 )
 
-export const apiKey = pgTable('api_key', {
+export const apiKey = pgTable('sim_api_key', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
@@ -410,7 +410,7 @@ export const apiKey = pgTable('api_key', {
   expiresAt: timestamp('expires_at'),
 })
 
-export const marketplace = pgTable('marketplace', {
+export const marketplace = pgTable('sim_marketplace', {
   id: text('id').primaryKey(),
   workflowId: text('workflow_id')
     .notNull()
@@ -428,7 +428,7 @@ export const marketplace = pgTable('marketplace', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 })
 
-export const userStats = pgTable('user_stats', {
+export const userStats = pgTable('sim_user_stats', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
@@ -458,7 +458,7 @@ export const userStats = pgTable('user_stats', {
   lastActive: timestamp('last_active').notNull().defaultNow(),
 })
 
-export const customTools = pgTable('custom_tools', {
+export const customTools = pgTable('sim_custom_tools', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
@@ -471,7 +471,7 @@ export const customTools = pgTable('custom_tools', {
 })
 
 export const subscription = pgTable(
-  'subscription',
+  'sim_subscription',
   {
     id: text('id').primaryKey(),
     plan: text('plan').notNull(),
@@ -499,7 +499,7 @@ export const subscription = pgTable(
   })
 )
 
-export const userRateLimits = pgTable('user_rate_limits', {
+export const userRateLimits = pgTable('sim_user_rate_limits', {
   userId: text('user_id')
     .primaryKey()
     .references(() => user.id, { onDelete: 'cascade' }),
@@ -512,7 +512,7 @@ export const userRateLimits = pgTable('user_rate_limits', {
 })
 
 export const chat = pgTable(
-  'chat',
+  'sim_chat',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id')
@@ -546,7 +546,7 @@ export const chat = pgTable(
   }
 )
 
-export const organization = pgTable('organization', {
+export const organization = pgTable('sim_organization', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   slug: text('slug').notNull(),
@@ -556,7 +556,7 @@ export const organization = pgTable('organization', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
 
-export const member = pgTable('member', {
+export const member = pgTable('sim_member', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
@@ -568,7 +568,7 @@ export const member = pgTable('member', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-export const invitation = pgTable('invitation', {
+export const invitation = pgTable('sim_invitation', {
   id: text('id').primaryKey(),
   email: text('email').notNull(),
   inviterId: text('inviter_id')
@@ -583,7 +583,7 @@ export const invitation = pgTable('invitation', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
-export const workspace = pgTable('workspace', {
+export const workspace = pgTable('sim_workspace', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   ownerId: text('owner_id')
@@ -596,7 +596,7 @@ export const workspace = pgTable('workspace', {
 // Define the permission enum
 export const permissionTypeEnum = pgEnum('permission_type', ['admin', 'write', 'read'])
 
-export const workspaceInvitation = pgTable('workspace_invitation', {
+export const workspaceInvitation = pgTable('sim_workspace_invitation', {
   id: text('id').primaryKey(),
   workspaceId: text('workspace_id')
     .notNull()
@@ -615,7 +615,7 @@ export const workspaceInvitation = pgTable('workspace_invitation', {
 })
 
 export const permissions = pgTable(
-  'permissions',
+  'sim_permissions',
   {
     id: text('id').primaryKey(),
     userId: text('user_id')
@@ -661,7 +661,7 @@ export const permissions = pgTable(
 )
 
 export const memory = pgTable(
-  'memory',
+  'sim_memory',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id').references(() => workflow.id, { onDelete: 'cascade' }),
@@ -690,7 +690,7 @@ export const memory = pgTable(
 )
 
 export const knowledgeBase = pgTable(
-  'knowledge_base',
+  'sim_knowledge_base',
   {
     id: text('id').primaryKey(),
     userId: text('user_id')
@@ -731,7 +731,7 @@ export const knowledgeBase = pgTable(
 )
 
 export const document = pgTable(
-  'document',
+  'sim_document',
   {
     id: text('id').primaryKey(),
     knowledgeBaseId: text('knowledge_base_id')
@@ -795,7 +795,7 @@ export const document = pgTable(
 )
 
 export const knowledgeBaseTagDefinitions = pgTable(
-  'knowledge_base_tag_definitions',
+  'sim_knowledge_base_tag_definitions',
   {
     id: text('id').primaryKey(),
     knowledgeBaseId: text('knowledge_base_id')
@@ -826,7 +826,7 @@ export const knowledgeBaseTagDefinitions = pgTable(
 )
 
 export const embedding = pgTable(
-  'embedding',
+  'sim_embedding',
   {
     id: text('id').primaryKey(),
     knowledgeBaseId: text('knowledge_base_id')
@@ -915,7 +915,7 @@ export const embedding = pgTable(
 )
 
 export const docsEmbeddings = pgTable(
-  'docs_embeddings',
+  'sim_docs_embeddings',
   {
     chunkId: uuid('chunk_id').primaryKey().defaultRandom(),
     chunkText: text('chunk_text').notNull(),
@@ -984,7 +984,7 @@ export const docsEmbeddings = pgTable(
 )
 
 export const copilotChats = pgTable(
-  'copilot_chats',
+  'sim_copilot_chats',
   {
     id: uuid('id').primaryKey().defaultRandom(),
     userId: text('user_id')
@@ -1014,7 +1014,7 @@ export const copilotChats = pgTable(
 )
 
 export const workflowCheckpoints = pgTable(
-  'workflow_checkpoints',
+  'sim_workflow_checkpoints',
   {
     id: uuid('id').primaryKey().defaultRandom(),
     userId: text('user_id')
@@ -1058,7 +1058,7 @@ export const workflowCheckpoints = pgTable(
 )
 
 export const templates = pgTable(
-  'templates',
+  'sim_templates',
   {
     id: text('id').primaryKey(),
     workflowId: text('workflow_id').references(() => workflow.id),
@@ -1099,7 +1099,7 @@ export const templates = pgTable(
 )
 
 export const templateStars = pgTable(
-  'template_stars',
+  'sim_template_stars',
   {
     id: text('id').primaryKey(),
     userId: text('user_id')
@@ -1136,7 +1136,7 @@ export const templateStars = pgTable(
 )
 
 export const copilotFeedback = pgTable(
-  'copilot_feedback',
+  'sim_copilot_feedback',
   {
     feedbackId: uuid('feedback_id').primaryKey().defaultRandom(),
     userId: text('user_id')
@@ -1168,7 +1168,7 @@ export const copilotFeedback = pgTable(
 )
 
 export const copilotApiKeys = pgTable(
-  'copilot_api_keys',
+  'sim_copilot_api_keys',
   {
     id: uuid('id').primaryKey().defaultRandom(),
     userId: text('user_id')
