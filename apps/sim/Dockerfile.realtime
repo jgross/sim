@@ -1,0 +1,19 @@
+# Dockerfile for SimStudio Realtime Service
+FROM oven/bun:1
+
+WORKDIR /app
+
+# Copy package files
+COPY apps/sim/package.json apps/sim/bun.lockb* ./
+
+# Install dependencies
+RUN bun install --frozen-lockfile
+
+# Copy source code
+COPY apps/sim .
+
+# Expose port
+EXPOSE 3002
+
+# Start the realtime server
+CMD ["bun", "run", "dev:sockets"]

@@ -1,0 +1,49 @@
+# Multi-stage build for SimStudio production deployment
+FROM oven/bun:1 as base
+
+# Install dependencies stage
+FROM base AS deps
+WORKDIR /app
+
+# Copy package files
+COPY apps/sim/package.json apps/sim/bun.lockb* ./
+RUN bun install --frozen-lockfile --production=false
+
+# Build stage
+FROM base AS builder
+WORKDIR /app
+
+# Copy dependencies
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy source code
+COPY apps/sim .
+
+# Build the application
+ENV NODE_ENV=production
+RUN bun run build
+
+# Runtime stage
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy built application
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+# Change ownership to nextjs user
+RUN chown -R nextjs:nodejs /app
+
+USER nextjs
+
+EXPOSE 3000
+
+CMD ["bun", "server.js"]

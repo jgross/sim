@@ -1,0 +1,85 @@
+# Kamal deployment configuration for SimStudio
+service: simstudio
+image: ghcr.io/jgross/sim/simstudio
+
+# Container registry - using GitHub Container Registry
+registry:
+  server: ghcr.io
+  username: jgross
+
+# Servers configuration
+servers:
+  web:
+    - 138.197.122.5
+  workers:
+    - 138.197.122.5
+
+# Build configuration
+builder:
+  dockerfile: apps/sim/Dockerfile.prod
+  context: .
+  args:
+    - BUILD_CONTEXT=sim
+
+# Environment variables
+env:
+  clear:
+    NODE_ENV: production
+  secret:
+    - DATABASE_URL
+    - BETTER_AUTH_SECRET
+    - ENCRYPTION_KEY
+    - BETTER_AUTH_URL
+    - NEXT_PUBLIC_APP_URL
+    - SOCKET_SERVER_URL
+    - NEXT_PUBLIC_SOCKET_URL
+
+# Health check
+healthcheck:
+  path: /api/health
+  port: 3000
+  max_attempts: 7
+  interval: 20s
+
+# Service configuration
+accessories:
+  realtime:
+    image: ghcr.io/jgross/sim/simstudio-realtime
+    hosts:
+      - 138.197.122.5
+    port: "3002:3002"
+    env:
+      clear:
+        NODE_ENV: production
+      secret:
+        - DATABASE_URL
+        - BETTER_AUTH_SECRET
+
+# Asset path (for static files)
+asset_path: /app/public
+
+# Volume mounts if needed
+volumes:
+  - "/opt/simstudio/uploads:/app/uploads"
+
+# Traefik configuration (load balancer)
+traefik:
+  options:
+    publish:
+      - "80:80"
+      - "443:443"
+    volume:
+      - "/letsencrypt/acme.json:/letsencrypt/acme.json"
+  args:
+    entryPoints.web.address: ":80"
+    entryPoints.websecure.address: ":443"
+    certificatesResolvers.letsencrypt.acme.tlsChallenge: true
+    certificatesResolvers.letsencrypt.acme.email: "your-email@example.com"
+    certificatesResolvers.letsencrypt.acme.storage: "/letsencrypt/acme.json"
+
+# Database migration
+pre_deploy:
+  - docker run --rm --network kamal_default -e DATABASE_URL=$DATABASE_URL ghcr.io/jgross/sim/simstudio bunx drizzle-kit migrate
+
+# Retention policy
+retain_containers: 5
